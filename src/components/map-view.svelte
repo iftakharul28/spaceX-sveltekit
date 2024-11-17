@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import 'ol/ol.css';
 	import Map from 'ol/Map';
 	import View from 'ol/View';
 	import TileLayer from 'ol/layer/Tile';
@@ -11,9 +10,12 @@
 	import Point from 'ol/geom/Point';
 	import { fromLonLat } from 'ol/proj';
 	import XYZ from 'ol/source/XYZ';
-	let map: Map | undefined;
+	import 'ol/ol.css';
+
+	// Coordinates prop type definition
 	export let coordinates: [number, number][];
 
+	let map: Map | undefined;
 	const vectorSource = new VectorSource({
 		features: coordinates.map(
 			(coord) =>
@@ -29,28 +31,27 @@
 			image: new CircleStyle({
 				radius: 10,
 				fill: new Fill({
-					color: 'limegreen'
+					color: '#91F652'
 				})
 			})
 		})
 	});
 
 	onMount(() => {
+		// Initialize the map only when component mounts
 		map = new Map({
 			target: 'map',
 			layers: [
 				new TileLayer({
 					source: new XYZ({
-						url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png',
-						attributions:
-							'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+						url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png'
 					})
 				}),
 				vectorLayer
 			],
 			view: new View({
 				center: fromLonLat(coordinates[0]),
-				zoom: 10
+				zoom: 14
 			})
 		});
 		return () => {
