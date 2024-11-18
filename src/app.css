@@ -1,3 +1,12 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+/* map style change */
+
+.leaflet-control-attribution {
+	display: none !important;
+}
+.leaflet-popup-content {
+	margin: 15px 20px !important;
+}

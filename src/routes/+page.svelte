@@ -20,6 +20,7 @@
 	import LandpadsDetails from '../components/landpads-details.svelte';
 	import SuccessRate from '../components/success-rate.svelte';
 	import MapView from '../components/map-view.svelte';
+	import MapViewNew from '../components/map-view-new.svelte';
 	import SuccessChart from '../components/success-chart.svelte';
 	import type { landpadsType } from '../types/landpads';
 	import type { PageData } from './$types';
@@ -39,7 +40,7 @@
 	]);
 
 	// Example data for the chart
-	const newChart = data.result.map((chat) => {
+	const chart_data = data.result.map((chat) => {
 		return {
 			name: chat.full_name,
 			successRate: (chat.successful_landings / chat.attempted_landings) * 100
@@ -188,15 +189,16 @@
 	</div>
 
 	<div class="col-span-4 max-w-full space-y-4">
-		<Card title="Map View" class="h-96 max-w-full">
-			<MapView
+		<Card title="Map View" class="h-96 max-w-full overflow-hidden">
+			<!-- <MapView
 				coordinates={data.result.map((coordinate) => {
 					return [coordinate.location.longitude, coordinate.location.latitude];
 				})}
-			/>
+			/> -->
+			<MapViewNew {landpads} />
 		</Card>
 		<Card class="relative flex h-96 max-w-full items-center justify-center">
-			<SuccessChart chartData={newChart} />
+			<SuccessChart {chart_data} />
 		</Card>
 	</div>
 </main>

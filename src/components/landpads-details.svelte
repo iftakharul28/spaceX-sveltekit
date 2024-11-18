@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Button, Modal } from 'flowbite-svelte';
-
-	let defaultModal = false;
-	export let item: landpadsType;
 	import type { landpadsType } from '../types/landpads';
+	let { item }: { item: landpadsType } = $props();
+	let defaultModal = $state(false);
 </script>
 
 <Button

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Progressbar } from 'flowbite-svelte';
-
-	export let progress: number;
+	let { progress }: { progress: number } = $props();
 </script>
 
 {#if progress != 0}
