@@ -1,38 +1,48 @@
 <script lang="ts">
 	let { landpads }: { landpads: landpadsType[] } = $props();
-	import leaflet from 'leaflet';
 	import 'leaflet/dist/leaflet.css';
 	import type { landpadsType } from '../types/landpads';
 
 	let mapRef: HTMLDivElement;
+	let leaflet: typeof import('leaflet') | null = null;
 	let map: L.Map | null = null;
 
 	$effect(() => {
-		map = leaflet.map(mapRef, {
-			center: [Number(landpads[0]?.location?.latitude), Number(landpads[0]?.location?.longitude)],
-			zoom: 9,
-			minZoom: 2
-		});
+		// Call the async function
+		initializeMap();
+		// Cleanup on unmount
+		return () => {
+			if (map) map.remove();
+		};
+	});
+	async function initializeMap() {
+		leaflet = await import('leaflet');
+		if (leaflet && mapRef) {
+			map = leaflet.map(mapRef, {
+				center: [Number(landpads[0]?.location?.latitude), Number(landpads[0]?.location?.longitude)],
+				zoom: 9,
+				minZoom: 2
+			});
 
-		leaflet
-			.tileLayer('https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}', {
-				attribution:
-					'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-			})
-			.addTo(map);
+			leaflet
+				.tileLayer('https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}', {
+					attribution:
+						'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				})
+				.addTo(map);
 
-		if (Array.isArray(landpads)) {
-			landpads
-				.filter((location) => location.location.latitude && location.location.longitude)
-				.forEach((location) => {
-					const position: [number, number] = [
-						Number(location.location.latitude),
-						Number(location.location.longitude)
-					];
-					addMarker(position, location);
-				});
+			if (Array.isArray(landpads)) {
+				landpads
+					.filter((location) => location.location.latitude && location.location.longitude)
+					.forEach((location) => {
+						const position: [number, number] = [
+							Number(location.location.latitude),
+							Number(location.location.longitude)
+						];
+						addMarker(position, location);
+					});
+			}
 		}
-
 		function addMarker(position: [number, number], location: landpadsType) {
 			const customIcon = leaflet?.divIcon({
 				className: `w-10 h-10 rounded-full ${
@@ -59,10 +69,7 @@
     `);
 			}
 		}
-		return () => {
-			if (map) map.remove();
-		};
-	});
+	}
 </script>
 
 <div bind:this={mapRef} id="map"></div>

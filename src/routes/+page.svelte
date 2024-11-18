@@ -185,8 +185,8 @@
 
 	<div class="col-span-4 max-w-full space-y-4">
 		<Card title="Map View" class="h-96 max-w-full overflow-hidden">
-			<MapView {landpads} /></Card
-		>
+			<MapView {landpads} />
+		</Card>
 		<Card class="relative flex h-96 max-w-full items-center justify-center">
 			<SuccessChart {landpads} />
 		</Card>
