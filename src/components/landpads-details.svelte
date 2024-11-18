@@ -5,9 +5,10 @@
 	let defaultModal = $state(false);
 </script>
 
-<Button
-	on:click={() => (defaultModal = true)}
-	class="bg-gray-200 text-gray-800 hover:bg-gray-200 hover:text-gray-800">View Details</Button
+<button
+	type="button"
+	onclick={() => (defaultModal = true)}
+	class="rounded bg-gray-200 px-3 py-0.5 text-gray-900">View Details</button
 >
 <Modal
 	title={item.full_name}
@@ -15,7 +16,7 @@
 	autoclose={false}
 	class="w-full whitespace-normal"
 >
-	<p class="text-base text-gray-500 dark:text-gray-400">
+	<p class="text-base text-gray-900">
 		{item.details}
 	</p>
 </Modal>

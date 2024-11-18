@@ -184,11 +184,15 @@
 	</div>
 
 	<div class="w-full space-y-4 lg:col-span-4">
-		<Card title="Map View" class="h-96 !max-w-full overflow-hidden">
+		<Card padding="none" class="h-96 !max-w-full overflow-hidden">
+			<h2 class="px-3 py-2.5 font-semibold text-black">Map View</h2>
 			<MapView {landpads} />
 		</Card>
-		<Card class="relative flex h-96 !max-w-full items-center justify-center">
-			<SuccessChart {landpads} />
+		<Card padding="none" class="!max-w-full">
+			<h2 class="px-3 py-2.5 font-semibold text-black">Success Rate Chart</h2>
+			<div class="relative grid h-56 place-items-center py-4">
+				<SuccessChart {landpads} />
+			</div>
 		</Card>
 	</div>
 </main>
