@@ -38,14 +38,6 @@
 		{ name: 'under construction', checked: false }
 	]);
 
-	// Example data for the chart
-	const chart_data = data.result.map((chat) => {
-		return {
-			name: chat.full_name,
-			successRate: (chat.successful_landings / chat.attempted_landings) * 100
-		};
-	});
-
 	function Update() {
 		const activeCheck = checkboxes
 			.filter((checkbox) => checkbox.checked)
@@ -168,19 +160,23 @@
 		{:else}
 			<div class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{#each landpads as item}
-					<Card>
+					<Card class="space-y-2">
 						<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 							{item.full_name}
 						</h5>
-						<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-							Location: {item.location.name}, {item.location.region}
+						<p class="font-bold leading-tight text-gray-700 dark:text-gray-400">
+							Location: <span class="font-medium capitalize"
+								>{item.location.name}, {item.location.region}</span
+							>
 						</p>
-						<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-							Status: <span class="font-medium">{item.status}</span>
+						<p class="font-bold leading-tight text-gray-700 dark:text-gray-400">
+							Status: <span class="font-medium capitalize">{item.status}</span>
 						</p>
-						<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-							{item.details || 'No details available'}
-						</p>
+						<div
+							class="max-h-48 overflow-y-auto font-normal leading-tight text-gray-700 dark:text-gray-400"
+						>
+							{@html item.details || 'No details available'}
+						</div>
 					</Card>
 				{/each}
 			</div>
@@ -189,8 +185,8 @@
 
 	<div class="col-span-4 max-w-full space-y-4">
 		<Card title="Map View" class="h-96 max-w-full overflow-hidden">
-			<MapView {landpads} />
-		</Card>
+			<MapView {landpads} /></Card
+		>
 		<Card class="relative flex h-96 max-w-full items-center justify-center">
 			<SuccessChart {landpads} />
 		</Card>

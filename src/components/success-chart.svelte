@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
 	import generateColors from '../utils/color-generate';
 	import type { landpadsType } from '../types/landpads';
@@ -10,16 +9,17 @@
 	let chart: Chart | null = null;
 	let canvas: HTMLCanvasElement;
 
-	const chart_data = landpads.map((chat) => {
-		const successRate =
-			chat.attempted_landings > 0 ? (chat.successful_landings / chat.attempted_landings) * 100 : 0; // Avoid division by zero
-		return {
-			name: chat.full_name,
-			successRate: successRate.toFixed(2) // Format to 2 decimal places
-		};
-	});
-
-	onMount(() => {
+	$effect(() => {
+		const chart_data = landpads.map((chat) => {
+			const successRate =
+				chat.attempted_landings > 0
+					? (chat.successful_landings / chat.attempted_landings) * 100
+					: 0; // Avoid division by zero
+			return {
+				name: chat.full_name,
+				successRate: successRate.toFixed(2) // Format to 2 decimal places
+			};
+		});
 		if (chart) {
 			chart.destroy();
 		}
@@ -62,7 +62,7 @@
 
 <!-- Center Text -->
 <div class="absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4 text-center">
-	<div style="font-size: 24px; font-weight: bold;">{chart_data?.length}</div>
+	<div style="font-size: 24px; font-weight: bold;">{landpads?.length}</div>
 	<div style="font-size: 14px; color: #666;">Landing Pads</div>
 </div>
 
