@@ -56,7 +56,7 @@
 	<title>spaceX</title>
 	<meta name="description" content="spaceX for SEO" />
 </svelte:head>
-<main class="container mt-7 grid grid-cols-12 gap-10">
+<main class="container mt-7 w-full px-2.5 md:px-0 lg:grid lg:grid-cols-12 lg:gap-10">
 	<div class="col-span-8">
 		<div class="bg-white p-5 text-left">
 			<div class="flex items-center justify-between">
@@ -101,7 +101,7 @@
 					<TableHeadCell>Wikipedia Link</TableHeadCell>
 					<TableHeadCell>Status</TableHeadCell>
 				</TableHead>
-				<TableBody tableBodyClass="divide-y">
+				<TableBody tableBodyClass="divide-y overscroll-y-auto">
 					{#each landpads as item}
 						<TableBodyRow>
 							<TableBodyCell>{item.full_name}</TableBodyCell>
@@ -160,7 +160,7 @@
 		{:else}
 			<div class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{#each landpads as item}
-					<Card class="space-y-2">
+					<Card class="!max-w-full space-y-2">
 						<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 							{item.full_name}
 						</h5>
@@ -183,11 +183,11 @@
 		{/if}
 	</div>
 
-	<div class="col-span-4 max-w-full space-y-4">
-		<Card title="Map View" class="h-96 max-w-full overflow-hidden">
+	<div class="w-full space-y-4 lg:col-span-4">
+		<Card title="Map View" class="h-96 !max-w-full overflow-hidden">
 			<MapView {landpads} />
 		</Card>
-		<Card class="relative flex h-96 max-w-full items-center justify-center">
+		<Card class="relative flex h-96 !max-w-full items-center justify-center">
 			<SuccessChart {landpads} />
 		</Card>
 	</div>

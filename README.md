@@ -2,7 +2,7 @@
 
 Everything you need to build a Svelte project.
 
-## Cloneing a project
+## Cloning project
 
 If you're seeing this, you've probably already done this step. Congrats!
 
