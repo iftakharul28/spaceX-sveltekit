@@ -2,21 +2,22 @@
 	import { onMount } from 'svelte';
 	import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
 	import generateColors from '../utils/color-generate';
+	import type { landpadsType } from '../types/landpads';
 	Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+
+	let { landpads }: { landpads: landpadsType[] } = $props();
 
 	let chart: Chart | null = null;
 	let canvas: HTMLCanvasElement;
 
-	// Props
-
-	let {
-		chart_data
-	}: {
-		chart_data?: {
-			name: string;
-			successRate: number;
-		}[];
-	} = $props();
+	const chart_data = landpads.map((chat) => {
+		const successRate =
+			chat.attempted_landings > 0 ? (chat.successful_landings / chat.attempted_landings) * 100 : 0; // Avoid division by zero
+		return {
+			name: chat.full_name,
+			successRate: successRate.toFixed(2) // Format to 2 decimal places
+		};
+	});
 
 	onMount(() => {
 		if (chart) {
@@ -27,10 +28,10 @@
 		chart = new Chart(canvas, {
 			type: 'doughnut',
 			data: {
-				labels: chart_data?.map((label) => label.name),
+				labels: chart_data.map((item) => item.name),
 				datasets: [
 					{
-						data: chart_data?.map((success) => success.successRate),
+						data: chart_data.map((item) => item.successRate),
 						backgroundColor: colors,
 						hoverBackgroundColor: colors.map((color) => color + '80'), // Slightly transparent on hover
 						borderWidth: 0

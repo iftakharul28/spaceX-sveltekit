@@ -20,7 +20,6 @@
 	import LandpadsDetails from '../components/landpads-details.svelte';
 	import SuccessRate from '../components/success-rate.svelte';
 	import MapView from '../components/map-view.svelte';
-	import MapViewNew from '../components/map-view-new.svelte';
 	import SuccessChart from '../components/success-chart.svelte';
 	import type { landpadsType } from '../types/landpads';
 	import type { PageData } from './$types';
@@ -190,15 +189,10 @@
 
 	<div class="col-span-4 max-w-full space-y-4">
 		<Card title="Map View" class="h-96 max-w-full overflow-hidden">
-			<!-- <MapView
-				coordinates={data.result.map((coordinate) => {
-					return [coordinate.location.longitude, coordinate.location.latitude];
-				})}
-			/> -->
-			<MapViewNew {landpads} />
+			<MapView {landpads} />
 		</Card>
 		<Card class="relative flex h-96 max-w-full items-center justify-center">
-			<SuccessChart {chart_data} />
+			<SuccessChart {landpads} />
 		</Card>
 	</div>
 </main>

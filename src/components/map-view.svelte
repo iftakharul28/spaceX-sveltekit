@@ -1,71 +1,95 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import Map from 'ol/Map';
-	import View from 'ol/View';
-	import TileLayer from 'ol/layer/Tile';
-	import VectorLayer from 'ol/layer/Vector';
-	import VectorSource from 'ol/source/Vector';
-	import { Circle as CircleStyle, Fill, Style } from 'ol/style';
-	import Feature from 'ol/Feature';
-	import Point from 'ol/geom/Point';
-	import { fromLonLat } from 'ol/proj';
-	import XYZ from 'ol/source/XYZ';
-	import 'ol/ol.css';
+	import 'leaflet/dist/leaflet.css';
+	import type { landpadsType } from '../types/landpads';
 
-	// Coordinates prop type definition
-	export let coordinates: [number, number][];
+	let mapRef: HTMLDivElement;
+	let leaflet: typeof import('leaflet') | null = null;
+	let map: L.Map | null = null;
+	let { landpads }: { landpads: landpadsType[] } = $props();
 
-	let map: Map | undefined;
-	const vectorSource = new VectorSource({
-		features: coordinates.map(
-			(coord) =>
-				new Feature({
-					geometry: new Point(fromLonLat(coord))
-				})
-		)
-	});
+	$effect(() => {
+		async function initializeMap() {
+			leaflet = await import('leaflet');
+			if (leaflet && mapRef) {
+				map = leaflet.map(mapRef, {
+					center: [
+						Number(landpads[0]?.location?.latitude),
+						Number(landpads[0]?.location?.longitude)
+					],
+					zoom: 9,
+					minZoom: 2
+				});
 
-	const vectorLayer = new VectorLayer({
-		source: vectorSource,
-		style: new Style({
-			image: new CircleStyle({
-				radius: 10,
-				fill: new Fill({
-					color: '#91F652'
-				})
-			})
-		})
-	});
-
-	onMount(() => {
-		// Initialize the map only when component mounts
-		map = new Map({
-			target: 'map',
-			layers: [
-				new TileLayer({
-					source: new XYZ({
-						url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png'
+				leaflet
+					.tileLayer('https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}', {
+						attribution:
+							'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					})
-				}),
-				vectorLayer
-			],
-			view: new View({
-				center: fromLonLat(coordinates[0]),
-				zoom: 14
-			})
-		});
+					.addTo(map);
+
+				if (Array.isArray(landpads)) {
+					landpads
+						.filter((location) => location.location.latitude && location.location.longitude)
+						.forEach((location) => {
+							const position: [number, number] = [
+								Number(location.location.latitude),
+								Number(location.location.longitude)
+							];
+							addMarker(position, location);
+						});
+				}
+			}
+		}
+		// Call the async function
+		initializeMap();
+		// Cleanup on unmount
 		return () => {
-			if (map) map.setTarget(undefined);
+			if (map) map.remove();
 		};
 	});
+
+	function addMarker(position: [number, number], location: landpadsType) {
+		const customIcon = leaflet?.divIcon({
+			className: `w-10 h-10 rounded-full ${
+				location.status === 'active'
+					? 'bg-green-600'
+					: location.status === 'retired'
+						? 'bg-red-600'
+						: 'bg-blue-600'
+			}`,
+			iconSize: [18, 18]
+		});
+
+		if (leaflet && map) {
+			leaflet
+				.marker(position, { icon: customIcon })
+				.addTo(map)
+				.bindPopup(createPopupContent(location));
+		}
+	}
+
+	function createPopupContent(location: landpadsType) {
+		return `
+        <h3 class="my-1.5 font-bold">${location.full_name}</h3>
+        <p class="text-2xs !my-1.5 capitalize">
+          <span class="font-bold">Status: </span>
+          ${location.status}
+        </p>
+        <p class="text-2xs !my-1.5 capitalize">
+          <span class="font-bold">Address: </span>
+          ${location.location.name}
+        </p>
+    `;
+	}
 </script>
 
-<div id="map"></div>
+<div bind:this={mapRef} id="map"></div>
 
 <style>
 	#map {
 		width: 100%;
 		height: 100%;
 		position: relative;
+		z-index: 9;
 	}
 </style>
